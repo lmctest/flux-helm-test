@@ -14,105 +14,15 @@ spec:
         app: {{ template "webapp.fullname" . }}
     spec:
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
-      initContainers:
-      - name: "copy-custom-config"
-        image: "busybox"
-        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
-        command: ["sh", "-c", "mkdir -p /bitnami/webapp/conf && cp /bitnami/webapp_config/my.cnf /bitnami/webapp/conf/my_custom.cnf"]
-        volumeMounts:
-        - name: config
-          mountPath: /bitnami/webapp_config
-        - name: data
-          mountPath: /bitnami/webapp
+        runAsUser: 0
+        fsGroup: 0
       containers:
       - name: webapp
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-        env:
-        {{- if .Values.usePassword }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "webapp.fullname" . }}
-              key: webapp-root-password
-        {{- if .Values.webappUser }}
-        - name: MARIADB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "webapp.fullname" . }}
-              key: webapp-password
-        {{- end }}
-        {{- else }}
-        - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
-        {{- end }}
-        - name: MARIADB_USER
-          value: {{ default "" .Values.webappUser | quote }}
-        - name: MARIADB_DATABASE
-          value: {{ default "" .Values.webappDatabase | quote }}
         ports:
-        - name: mysql
-          containerPort: 3306
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-        volumeMounts:
-        - name: data
-          mountPath: /bitnami/webapp
-{{- if .Values.metrics.enabled }}
+        - name: app
+          containerPort: 5001
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
-        env:
-        {{- if .Values.usePassword }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "webapp.fullname" . }}
-              key: webapp-root-password
-        {{- end }}
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
-        ports:
-        - name: metrics
-          containerPort: 9104
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /metrics
-            port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
-        resources:
-{{ toYaml .Values.metrics.resources | indent 10 }}
-{{- end }}
-      volumes:
-      - name: config
-        configMap:
-          name: {{ template "webapp.fullname" . }}
-      - name: data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "webapp.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end -}}

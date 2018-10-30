@@ -1,4 +1,4 @@
-appVersion: 10.1.30
+appVersion: 1.0.0
 description: Fast, reliable, scalable, and easy to use open-source relational database
   system. MariaDB Server is intended for mission-critical, heavy-load production systems
   as well as for embedding into mass-deployed software.
@@ -7,9 +7,6 @@ home: https://web-fe.org
 icon: https://bitnami.com/assets/stacks/web-fe/img/web-fe-stack-220x234.png
 keywords:
 - web-fe
-- mysql
-- database
-- sql
 - prometheus
 maintainers:
 - email: containers@bitnami.com
@@ -18,4 +15,4 @@ name: web-fe
 sources:
 - https://github.com/bitnami/bitnami-docker-web-fe
 - https://github.com/prometheus/mysqld_exporter
-version: 2.1.3
+version: 1.0.0
