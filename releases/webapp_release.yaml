@@ -10,5 +10,6 @@
     chartGitPath: webapp
     values:
       image: cceshop/webapp
+      imagePullPolicy: IfNotPresent
       persistence:
         enabled: false
