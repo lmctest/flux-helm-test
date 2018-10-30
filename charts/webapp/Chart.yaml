@@ -1,0 +1,16 @@
+appVersion: 1.0.0
+description: CCoin exchange web frontend.
+engine: gotpl
+home: https://coin-exchange.cz
+icon: https://bitnami.com/assets/stacks/mariadb/img/mariadb-stack-220x234.png
+keywords:
+- webapp
+- front-end
+maintainers:
+- email: webmaster@coin-exchange.cz
+  name: CoinMaker
+name: webapp-fe
+sources:
+- https://github.com/bitnami/bitnami-docker-mariadb
+- https://github.com/prometheus/mysqld_exporter
+version: 1.0.0
