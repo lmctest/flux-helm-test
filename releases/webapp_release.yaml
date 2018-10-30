@@ -2,12 +2,12 @@
   apiVersion: helm.integrations.flux.weave.works/v1alpha2
   kind: FluxHelmRelease
   metadata:
-    name: mariadb
+    name: web-fe
     namespace: test-test-test
     labels:
       chart: webapp
   spec:
-    chartGitPath: mariadb
+    chartGitPath: webapp
     values:
       image: cceshop/web-fe:latest
       persistence:
