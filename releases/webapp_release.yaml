@@ -3,12 +3,12 @@
   kind: FluxHelmRelease
   metadata:
     name: mariadb
-    namespace: test-test-test
+    namespace: test
     labels:
-      chart: mariadb
+      chart: webapp
   spec:
-    chartGitPath: mariadb
+    chartGitPath: webapp
     values:
-      image: bitnami/mariadb:10.2
+      image: cceshop/webapp
       persistence:
         enabled: false
