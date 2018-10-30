@@ -2,14 +2,13 @@
   apiVersion: helm.integrations.flux.weave.works/v1alpha2
   kind: FluxHelmRelease
   metadata:
-    name: web-fe
-    namespace: test
+    name: mariadb
+    namespace: test-test-test
     labels:
       chart: webapp
   spec:
-    chartGitPath: webapp
+    chartGitPath: mariadb
     values:
       image: cceshop/web-fe:latest
-      imagePullPolicy: IfNotPresent
       persistence:
         enabled: false

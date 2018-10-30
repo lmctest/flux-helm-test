@@ -1,4 +1,8 @@
-image: cceshop/web-fe:latest
+## Bitnami MariaDB image version
+## ref: https://hub.docker.com/r/bitnami/webapp/tags/
+##
+## Default: none
+image: bitnami/webapp:10.1.30-r1
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
@@ -6,7 +10,26 @@ image: cceshop/web-fe:latest
 imagePullPolicy: IfNotPresent
 
 ## Use password authentication
-usePassword: false
+usePassword: true
+
+## Specify password for root user
+## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
+## ref: https://github.com/bitnami/bitnami-docker-webapp/blob/master/README.md#setting-the-root-password-on-first-run
+##
+# webappRootPassword:
+
+## Create a database user
+## Password defaults to a random 10-character alphanumeric string if not set and usePassword is true
+## ref: https://github.com/bitnami/bitnami-docker-webapp/blob/master/README.md#creating-a-database-user-on-first-run
+##
+# webappUser:
+# webappPassword:
+
+## Create a database
+## ref: https://github.com/bitnami/bitnami-docker-webapp/blob/master/README.md#creating-a-database-on-first-run
+##
+# webappDatabase:
+
 
 service:
   ## Kubernetes service type
@@ -27,14 +50,14 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: false
+  enabled: true
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## mariadb data Persistent Volume Storage Class
+  ## webapp data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -42,8 +65,25 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-  #accessMode: ReadWriteOnce
-  #size: 8Gi
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure MariaDB with a custom my.cnf file
+## ref: https://webapp.com/kb/en/webapp/configuring-webapp-with-mycnf/#example-of-configuration-file
+##
+# config: |-
+#   [mysqld]
+#   innodb_buffer_pool_size=2G
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

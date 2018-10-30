@@ -17,11 +17,16 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: web-fe
-    port: 5001
+  - name: mysql
+    port: 3306
     targetPort: mysql
 {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9104
+    targetPort: metrics
 {{- end }}
   selector:
     app: {{ template "webapp.fullname" . }}
