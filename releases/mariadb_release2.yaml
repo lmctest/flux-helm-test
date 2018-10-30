@@ -10,6 +10,5 @@
     chartGitPath: mariadb
     values:
       image: bitnami/mariadb:10.2.18
-      replicaCount: 3
       persistence:
         enabled: false
