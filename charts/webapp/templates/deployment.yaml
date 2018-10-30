@@ -1,28 +1,51 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "webapp.fullname" . }}
+  name: {{ include "webapp.fullname" . }}
   labels:
-    app: {{ template "webapp.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "webapp.name" . }}
+    helm.sh/chart: {{ include "webapp.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "webapp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "webapp.fullname" . }}
+        app.kubernetes.io/name: {{ include "webapp.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      securityContext:
-        runAsUser: 0
-        fsGroup: 0
       containers:
-      - name: webapp
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-        ports:
-        - name: app
-          containerPort: 5001
-      - name: metrics
-        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 5001
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,18 +1,5 @@
-appVersion: 1.0.0
-description: Fast, reliable, scalable, and easy to use open-source relational database
-  system. MariaDB Server is intended for mission-critical, heavy-load production systems
-  as well as for embedding into mass-deployed software.
-engine: gotpl
-home: https://web-fe.org
-icon: https://bitnami.com/assets/stacks/web-fe/img/web-fe-stack-220x234.png
-keywords:
-- web-fe
-- prometheus
-maintainers:
-- email: containers@bitnami.com
-  name: bitnami-bot
-name: web-fe
-sources:
-- https://github.com/bitnami/bitnami-docker-web-fe
-- https://github.com/prometheus/mysqld_exporter
-version: 1.0.0
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for Kubernetes
+name: webapp
+version: 0.1.0
