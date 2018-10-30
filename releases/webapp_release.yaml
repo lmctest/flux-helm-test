@@ -9,7 +9,7 @@
   spec:
     chartGitPath: webapp
     values:
-      image: cceshop/webapp
+      image: cceshop/web-fe:latest
       imagePullPolicy: IfNotPresent
       persistence:
         enabled: false

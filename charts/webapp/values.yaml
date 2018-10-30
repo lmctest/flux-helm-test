@@ -1,4 +1,4 @@
-image: cceshop/web-fe
+image: cceshop/web-fe:latest
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
